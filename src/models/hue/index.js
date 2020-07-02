@@ -30,8 +30,10 @@ class Hue {
 			this._authenticatedApi = await HueApi.v3.api.createLocal(hubIpAddress).connect(this._user.username);
 			const bridgeConfig = await this._authenticatedApi.configuration.getConfiguration();
 			return {
-				'method': 'success',
-				'message': `Connected to ${bridgeConfig.name} at ${bridgeConfig.ipaddress}`
+				ip: bridgeConfig.ipaddress,
+				name: bridgeConfig.name,
+				username: this._user.username,
+				key: this._user.clientkey
 			}
 		} catch(e) {
 			if (e.getHueErrorType() === 101) {

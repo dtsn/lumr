@@ -1,20 +1,19 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 import isDev from 'electron-is-dev';
 import path from 'path';
-import storage from 'electron-json-storage';
-import Api from '../src/main-renderer/api';
+import os from 'os';
 
 if (isDev) {
 	require('electron-reload');
 }
 
-const createWindow = () => {
+const createWindow = async () => {
 	// create the browser window.
 	let win = new BrowserWindow({
 		width: 1200,
 		height: 1200,
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
 		}
 	});
 
@@ -27,23 +26,23 @@ const createWindow = () => {
 	if (isDev) {
 		// open the DevTools.
 		win.webContents.openDevTools();
+		// load extensions
+		let extensionPath = '/Library/Application Support/Google/Chrome/Profile 1/Extensions/';
+		// redux devtools
+		await session.defaultSession.loadExtension(
+			path.join(os.homedir(), extensionPath + 'lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0')
+		);
+		// react devtools
+		await session.defaultSession.loadExtension(
+			path.join(os.homedir(), extensionPath + 'fmkadmapgofadopljbjfkapdkoienihi/4.7.0_7')
+		);
 	}
 };
 
-
-require('../src/main-renderer/api');
-
-ipcMain.on('write', (event, arg) => {
-    storage.set('test', {'hello': 'world'}, () => {
-    	event.reply('write', 'yoyo');
-    });
-});
-
-ipcMain.on('read', (event, arg) => {
-	storage.get('test', (err, data) => {
-		event.reply('read', data);
-	});
-});
+// connect API
+require('../src/main-renderer/api/connect');
+// lights API
+require('../src/main-renderer/api/lights');
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

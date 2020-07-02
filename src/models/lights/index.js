@@ -1,30 +1,32 @@
 import HueApi from "node-hue-api";
-import config from '../../config.json';
 const LightState = HueApi.v3.lightStates.LightState;
 
 class Lights {
-	constructor() {
-		this._lights = config.lights;
-		// create all the light objects
-		this._lights.forEach((light) => {
-			this[light.name] = light.code;
-		});
-		console.log('trying to connect');
-		this.connect().then((api) => {
-			this.api = api;
-			console.log('Connected to the Hub');
-		}).catch((e) => {
-			console.log('Failed to connect to hub');
-			console.log(e);
-		});
+	constructor(host, username) {
+		this.host = host;
+		this.username = username;
+	}
+
+	async getAll() {
+		let lights = await this.api.lights.getAll();
+		return lights;
 	}
 
 	connect() {
-		return HueApi.v3.api.create(config.host, config.username);
+		return new Promise((resolve, reject) => {
+			HueApi.v3.api.createLocal(this.host).connect(this.username).then((api) => {
+				this.api = api;
+				resolve(this.api);
+			}).catch((err) => {
+				console.log(err);
+				reject(err);
+			});
+		});
 	}
 
-	applyState(light, state, counter = 0) {
-		this.api.lights.setLightState(light, state).then((result) => {
+	applyState(id, state, counter = 0) {
+		this.api.lights.setLightState(id, state).then((result) => {
+			console.log(result, state, counter);
 			console.log(light, `Light state change: true`);
 		}).catch((e) => {
 			console.log(`Light state change: false`);
@@ -66,4 +68,4 @@ class Lights {
 	}
 }
 
-export default new Lights();
+export default Lights;
