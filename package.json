@@ -1,66 +1,22 @@
 {
   "name": "lumr",
-  "version": "0.1.0",
-  "private": true,
-  "author": "daniel",
-  "main": "public/electron.js",
-  "homepage": "./",
-  "description": "awesome lighting effects",
-  "build": {
-    "appId": "lumr",
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    }
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "client": "npm start --prefix client",
+    "server": "node --experimental-modules --experimental-json-modules server.js",
+    "server-mac": "node --experimental-modules --experimental-json-modules server.js --environment=mac",
+    "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "electron-is-dev": "^1.2.0",
-    "esm": "^3.2.25",
-    "lodash.throttle": "^4.1.1",
-    "node-hue-api": "^4.0.7",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
-    "react-scripts": "3.4.1",
-    "redux": "^4.0.5"
-  },
-  "scripts": {
-    "electron": "cross-env NODE_ENV=dev nodemon --exec \"\"electron --inspect=5858 .\"\"",
-    "electron-dev": "concurrently \"cross-env BROWSER=none PORT=8080 npm run start\" \"wait-on http://localhost:8080 && npm run electron .\"",
-    "start": "cross-env PORT=8080 BROWSER=none react-scripts start",
-    "build": "react-scripts build",
-    "package-mac": "npm run build && electron-builder build --mac"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "afplay": "^1.0.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "minimist": "^1.2.5",
+    "node-hue-api": "^4.0.10"
   },
   "devDependencies": {
-    "concurrently": "^5.2.0",
-    "cross-env": "^7.0.2",
-    "electron": "^9.0.2",
-    "electron-builder": "^22.7.0",
-    "electron-reload": "^1.5.0",
-    "nodemon": "^2.0.4",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "wait-on": "^5.0.0"
+    "concurrently": "^5.3.0"
   }
 }
