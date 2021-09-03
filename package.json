@@ -1,12 +1,13 @@
 {
   "name": "lumr",
-  "version": "1.0.0",
+  "version": "0.0.1-alpha",
   "type": "module",
   "scripts": {
     "client": "npm start --prefix client",
     "server": "node --experimental-modules --experimental-json-modules server.js",
     "server-mac": "node --experimental-modules --experimental-json-modules server.js --environment=mac",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+	"start-mac": "concurrently \"npm run server-mac\" \"npm run client\""
   },
   "dependencies": {
     "afplay": "^1.0.3",

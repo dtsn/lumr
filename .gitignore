@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+
 /server/node_modules
 /client/node_modules
 /.pnp
@@ -12,8 +13,8 @@
 
 # production
 /build
+/dist
 
-config.json
 config_old.json
 
 # misc
@@ -26,3 +27,8 @@ config_old.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+/.vs-code
+/.storybrook
+
+config.json

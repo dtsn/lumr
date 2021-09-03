@@ -12,6 +12,7 @@ class Welcome extends React.Component {
 		super(props);
 		this.state = {
 			hub: false,
+            hubs: false,
 			lights: false,
 			lightStatus: false,
 			selectedLights: [],
@@ -20,7 +21,7 @@ class Welcome extends React.Component {
 
 	componentDidMount() {
 		// if we have the config but not the lights restart light discovery
-		if (this.props.config && !this.props.config.lights) {
+		if (this.props.config && this.props.config.id && !this.props.config.lights) {
 			this.setState({
 				hub: HUB_STATUS_CONNECTED,
 			});
@@ -32,12 +33,21 @@ class Welcome extends React.Component {
 		this.setState({
 			hub: HUB_STATUS_LOADING,
 		});
-		fetch('/api/discover/hubs').then((res) => {
+		fetch('/api/discover/hubs')
+            .then((res) => res.json())
+            .then(json => {
+                if (!json.hubs) {
+                    this.setState({
+                        hub: HUB_STATUS_CONNECTED,
+                    });
+                    this.discoverLights();
+                }
+
 			if (res.status === 200) {
-				this.setState({
-					hub: HUB_STATUS_CONNECTED,
-				});
-				this.discoverLights();
+
+
+
+
 			} else {
 				this.setState({
 					hub: HUB_STATUS_ERROR,
@@ -111,8 +121,6 @@ class Welcome extends React.Component {
 					</div>
 				);
 			});
-
-			console.log(this.state.lights);
 		}
 
 		return (

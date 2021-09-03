@@ -1,10 +1,9 @@
-import HueApi from "node-hue-api";
+import HueApi from 'node-hue-api';
 
-const APP_NAME = 'lumr2';
+const APP_NAME = 'lumr';
 const DEVICE_NAME = 'example';
 
 class Hue {
-
 	constructor() {
 		this._user = false;
 		this._authenticatedApi = false;
@@ -28,24 +27,26 @@ class Hue {
 		try {
 			this._user = await unauthenticatedApi.users.createUser(APP_NAME, DEVICE_NAME);
 			this._authenticatedApi = await HueApi.v3.api.createLocal(hubIpAddress).connect(this._user.username);
-            const bridgeConfig = await this._authenticatedApi.configuration.getConfiguration();
+			const bridgeConfig = await this._authenticatedApi.configuration.getConfiguration();
 			return {
 				ip: bridgeConfig.ipaddress,
 				name: bridgeConfig.name,
 				username: this._user.username,
-				key: this._user.clientkey
-			}
-		} catch(e) {
+				key: this._user.clientkey,
+			};
+		} catch (e) {
 			if (e.getHueErrorType() === 101) {
 				// handle the button not being pressed
-				throw new Error('The Link button on the bridge was not pressed. Please press the Link button and try again.');
-   			} else {
-      			throw e;
-    		}
-    	}
+				throw new Error(
+					'The Link button on the bridge was not pressed. Please press the Link button and try again.'
+				);
+			} else {
+				throw e;
+			}
+		}
 	}
 
-    /**
+	/**
 	 * Ping each hub every 5 seconds, up to a max of 30 seconds until we have
 	 * created a user on the hub.
 	 * @param  {[type]} hubs [description]
@@ -84,10 +85,10 @@ class Hue {
 					console.log('timed out');
 					reject('Timed out');
 				}
-			}
+			};
 			search();
 		});
-    }
+	}
 }
 
 export default new Hue();
