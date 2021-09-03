@@ -30,16 +30,34 @@ router.get('/config', async (req, res, next) => {
 	}
 });
 
-router.get('/hubs', async (req, res, next) => {
+router.get('/hubs/:hub?', async (req, res, next) => {
 	let credentials = false;
+    let hub = req.params.hub;
+    let hubs = await hue.discover();
 	console.log('starting discovery of hubs');
-	// otherwise look for hubs
-	let hubs = await hue.discover();
-	console.log('Found hubs', hubs);
-	// start hub discovery
-	console.log('pinging hubs');
+
+    // look for hubs
+    if (!hub) {
+        // more than one hub we will need to select one
+        if (hubs.length > 1) {
+            return res.status(200).json({
+                hubs,
+            });
+        } else {
+            // only one hub so just default to that one
+            hub = hubs[0];
+        }
+    } else {
+        // passed through a param so select that one
+        hubs.forEach(h => {
+            if (h.ip === hub) {
+                hub = h;
+            }
+        });
+    }
+
 	try {
-		credentials = await hue.pingHubs(hubs);
+		credentials = await hue.createUser(hub.ip);
 		// write out the credentails to the config file
 		let config = JSON.parse(fs.readFileSync(path.resolve('config.json'), 'UTF-8'));
 		config = {
